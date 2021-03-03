@@ -8,14 +8,10 @@ const saveBtn = document.getElementById("jsSave");
 const currnetBtn = document.getElementById("jsCur");
 
 const INITIAL_COLOR = "#2c2c2c";
-const CANVAS_SIZE = 700;
+let CANVAS_SIZE;
 
-canvas.width = CANVAS_SIZE;
-canvas.height = CANVAS_SIZE;
-
-// for init ... 배경 없이 저장시 투명하게 저장되는 오류 수정
-ctx.fillStyle = "white";
-ctx.fillRect(0, 0, CANVAS_SIZE, CANVAS_SIZE);
+// canvas.width = CANVAS_SIZE;
+// canvas.height = CANVAS_SIZE;
 
 ctx.strokeStyle = INITIAL_COLOR;
 ctx.fillStyle = INITIAL_COLOR;
@@ -23,6 +19,23 @@ ctx.lineWidth = 2.5;
 
 let painting = false;
 let filling = false;
+
+function sizeCanvas() {
+    const screenWidth = screen.width;
+    const screenHeight = screen.height;
+    if (screenWidth > 900) {
+        CANVAS_SIZE = 700;
+        canvas.width = CANVAS_SIZE;
+        canvas.height = CANVAS_SIZE;
+    } else {
+        CANVAS_SIZE = screenWidth * 0.7;
+        canvas.width = CANVAS_SIZE;
+        canvas.height = CANVAS_SIZE;
+    }
+    // for init ... 배경 없이 저장시 투명하게 저장되는 오류 수정
+    ctx.fillStyle = "white";
+    ctx.fillRect(0, 0, CANVAS_SIZE, CANVAS_SIZE);
+}
 
 function stopPainting() {
     painting = false;
@@ -59,7 +72,7 @@ function onTouchMove(event) {
     const rect = event.target.getBoundingClientRect();
     const x = event.targetTouches[0].pageX - rect.left;
     const y = event.targetTouches[0].pageY - rect.top;
-    if (x < 0 || x > 700 || y < 0 || y > 700) {
+    if (x < 0 || x > CANVAS_SIZE || y < 0 || y > CANVAS_SIZE) {
         stopPainting();
     }
     if (painting && !filling) {
@@ -131,6 +144,9 @@ function handleSaveClick() {
 }
 
 if (canvas) {
+    sizeCanvas();
+    console.dir(canvas.width);
+    console.log(screen.width);
     // 위에 있을 때
     canvas.addEventListener("mousemove", onMouseMove);
     canvas.addEventListener("touchmove", onTouchMove);
