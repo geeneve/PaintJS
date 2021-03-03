@@ -110,10 +110,13 @@ function handleSaveClick() {
 if (canvas) {
     // 위에 있을 때
     canvas.addEventListener("mousemove", onMouseMove);
+    canvas.addEventListener("touchmove", onMouseMove);
     // 마우스를 누를 때
     canvas.addEventListener("mousedown", startPainting);
+    canvas.addEventListener("touchstart", startPainting);
     // 마우스를 놓을 때
     canvas.addEventListener("mouseup", stopPainting);
+    canvas.addEventListener("touchend", stopPainting);
     // 캔버스를 벗어날 때
     canvas.addEventListener("mouseleave", stopPainting);
 
