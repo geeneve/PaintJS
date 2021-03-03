@@ -32,6 +32,15 @@ function startPainting() {
     painting = true;
 }
 
+function startTouch(event) {
+    painting = true;
+    const rect = event.target.getBoundingClientRect();
+    const x = event.targetTouches[0].pageX - rect.left;
+    const y = event.targetTouches[0].pageY - rect.top;
+    ctx.beginPath();
+    ctx.moveTo(x, y);
+}
+
 function onMouseMove(event) {
     // offset : 캔버스의 위치를 기준으로
     const x = event.offsetX;
@@ -40,6 +49,20 @@ function onMouseMove(event) {
         ctx.beginPath();
         ctx.moveTo(x, y);
     } else if (painting && !filling) {
+        ctx.lineTo(x, y);
+        ctx.stroke();
+    }
+}
+
+function onTouchMove(event) {
+    event.preventDefault();
+    const rect = event.target.getBoundingClientRect();
+    const x = event.targetTouches[0].pageX - rect.left;
+    const y = event.targetTouches[0].pageY - rect.top;
+    if (x < 0 || x > 700 || y < 0 || y > 700) {
+        stopPainting();
+    }
+    if (painting && !filling) {
         ctx.lineTo(x, y);
         ctx.stroke();
     }
@@ -110,10 +133,10 @@ function handleSaveClick() {
 if (canvas) {
     // 위에 있을 때
     canvas.addEventListener("mousemove", onMouseMove);
-    canvas.addEventListener("touchmove", onMouseMove);
+    canvas.addEventListener("touchmove", onTouchMove);
     // 마우스를 누를 때
     canvas.addEventListener("mousedown", startPainting);
-    canvas.addEventListener("touchstart", startPainting);
+    canvas.addEventListener("touchstart", startTouch);
     // 마우스를 놓을 때
     canvas.addEventListener("mouseup", stopPainting);
     canvas.addEventListener("touchend", stopPainting);
